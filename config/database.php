@@ -5,9 +5,9 @@
 
 // Database credentials
 define("DB_HOST", "localhost");
-define("DB_NAME", "todo");
-define("DB_USERNAME", "root");
-define("DB_PASSWORD", "");
+define("DB_NAME", "_DatabaseName_");
+define("DB_USERNAME", "_DatabaseUser_");
+define("DB_PASSWORD", "_DataBasePassword_");
 setlocale(LC_ALL, 'fr_FR');
 
 try{
