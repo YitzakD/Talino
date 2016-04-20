@@ -1,0 +1,42 @@
+.newboard-wrap {
+    width: 895px;
+    min-height: 40px;
+    height: auto;
+    margin: 0 auto;
+}
+.nb-title-lg,
+.nb-title-2x {
+    display: block;
+}
+
+.nb-title-2x {
+    font-size: 20px;
+    font-weight: 400;
+}
+.nb-title-lg {
+    font-size: 13px;
+}
+.nb-form-advice {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+.label-data-for-nb {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+.label-head,
+.label-cnt {
+    display: block;
+}
+
+.label-head {
+    font-weight: 500;
+    font-size: 16px;
+}
+.label-cnt {
+    font-size: 12px;
+    font-weight: normal;
+}

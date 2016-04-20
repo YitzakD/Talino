@@ -1,0 +1,145 @@
+/*  Menu    */
+.s-menu {
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.s-menu div > .s-menu-link {
+    display: block;
+    height: 25px;
+    line-height: 25px;
+    padding: 5px 12px;
+    border-bottom: 1px solid #BDC3C7;
+    margin-bottom: 0 !important;
+}
+.s-menu div:last-child > .s-menu-link {
+    border-bottom-width: 0;
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    -ms-transition: all .5s;
+    -o-transition: all .5s;
+    transition: all .5s;
+}
+.s-menu-link:hover {
+    background: #FAFAFA;
+}
+.s-menu div > .s-menu-link-active {
+    border-left: 7px solid #00ACED;
+    color: #00ACED;
+    text-transform: capitalize;
+    font-weight: bold;
+}
+
+/*  Conteneur   */
+#s-avatar-up {
+    width: 120px;
+}
+.fack-file-inputer {
+    position: relative;
+    top: -36px;
+}
+.fack-file-inputer #set_img {
+    position: relative;
+    z-index: 2;
+    top: 34px;
+    padding: 9px;
+    width: 207px;
+    opacity: 0;
+    cursor: pointer;
+}
+.s-mini-pub {
+    position: relative;
+    top: -15px;
+}
+.set-uploads-infos {
+    color: #2C3E50;
+}
+
+.td-set-btn {
+    background: #1ABC9C;
+    background: -moz-linear-gradient(top, #9AECD2 0%, #1ABC9C 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #9AECD2), color-stop(100%, #1ABC9C));
+    background: -webkit-linear-gradient(top, #9AECD2 0%, #1ABC9C 100%);
+    background: -o-linear-gradient(top, #9AECD2 0%, #1ABC9C 100%);
+    background: -ms-linear-gradient(top, #9AECD2 0%, #1ABC9C 100%);
+    background: linear-gradient(to bottom, #9AECD2 0%, #1ABC9C 100%);
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 9px 10px !important;
+    border: 1px solid #1ABC9C;
+}
+.td-set-btn:hover {
+    background: #16BC9C;
+}
+
+input.spanit[type=submit],
+button.spanit[type=submit],
+.spanit {
+    color: #FFFFFF;
+    padding: 3px 5px;
+    border-width: 0;
+}
+
+.reorder-primary {
+    background-color: #2ECC71;
+}
+.reorder-secondary {
+    background-color: #9B59B6;
+
+}
+.status-private {
+    background-color: #7F8C8D;
+}
+.status-public {
+    background-color: #2ECC71;
+    color: #FFFFFF;
+    padding: 3px 5px;
+    border-width: 0;
+}
+
+.set-nbr-notes {
+    background-color: #3498DB;
+    color: #FFFFFF;
+    padding: 3px 5px;
+    border-width: 0;
+}
+
+.set-like-btn {
+    background-color: #F5F5F5;
+    background: -moz-linear-gradient(top, #F5F5F5 0%, #E1E1E1 200%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #F5F5F5), color-stop(200%, #E1E1E1));
+    background: -webkit-linear-gradient(top, #F5F5F5 0%, #E1E1E1 200%);
+    background: -o-linear-gradient(top, #F5F5F5 0%, #E1E1E1 200%);
+    background: -ms-linear-gradient(top, #F5F5F5 0%, #E1E1E1 200%);
+    background: linear-gradient(to bottom, #F5F5F5 0%, #E1E1E1 200%);
+}
+.set-like-btn a {
+    margin: 0;
+    padding: 0;
+}
+.set-like-btn:focus,
+.set-like-btn:hover {
+    color: #2C3E50;
+    background-color: #F5F5F5;
+}
+
+.progress {
+    position:relative;
+    width: 215px;
+    padding: 1px;
+    border-radius: 3px;
+}
+.bar {
+    background-color: #3498DB;
+    width: 0%;
+    height: 5px;
+    border-radius: 3px;
+}
+.percent {
+    position: absolute;
+    display: inline-block;
+    top: 0;
+    left: 48%;
+    font-size: 13px;
+    text-align: left;
+}

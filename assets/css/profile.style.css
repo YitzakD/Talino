@@ -1,0 +1,147 @@
+/* LEFT BOX */
+.p-u-btn:hover {
+    background-color: #2980B9;
+}
+.p-user-avatar {
+    display: block;
+    float: left;
+    width: 100%;
+    height: auto;
+    background: #2980B9;
+    border-radius: 10px;
+}
+.p-user-avatar:hover {
+    background: #3498DB;
+}
+.p-user-avatar img {
+    width: 100%;
+    border-radius: 10px;
+    padding-bottom: 1px;
+}
+.p-user-name {
+    display: block;
+    float: left;
+    width: 100%;
+    height: auto;
+    margin: 10px 0;
+    font-size: 23px;
+    font-weight: 600;
+}
+.p-u-pseudo-faded {
+    display: block;
+    color: #A0A0A0;
+    text-transform: capitalize;
+    font-weight: 500;
+    font-size: 20px;
+}
+.p-user-about {
+    display: block;
+    float: left;
+    width: 100%;
+    height: auto;
+    margin: 10px 0;
+}
+.p-u-bio {
+    border-top: 1px solid #BDC3C7;
+    padding-top: 5px;
+}
+
+.p-user-associates {
+    display: block;
+    float: left;
+    width: 100%;
+    height: auto;
+    margin: 10px 0;
+}
+.nbr-in-color {
+    font-size: 2em;
+    color: #3498DB;
+}
+.fields-in-pu {
+    font-size: .8em;
+}
+
+.p-user-joined-date {
+    display: block;
+    float: left;
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+.small-date-text {
+    font-size: 11px;
+}
+
+
+
+/* RIGHT BOX */
+.board-infos {
+    display: block;
+    float: left;
+    width: 100%;
+    margin: 0 7px 15px 0;
+}
+.in-board-infos {
+    display: block;
+    float: left;
+    width: 100%;
+}
+.in-board-desc {
+    display: block;
+    float: left;
+    width: 96%;
+    padding: 13px 15px;
+    border-bottom: 1px solid #BDC3C7;
+}
+.p-u-tabs-svp {
+    display: inline-block;
+    float: left;
+    width: 24.5%;
+    padding: 15px 0;
+    border-right: 1px solid #BDC3C7;
+}
+.in-board-infos .p-u-tabs-svp:last-child {
+    border-right: 0;
+}
+.in-board-infos .p-u-tabs-svp:last-child {
+    border-right: 0;
+}
+.p-to-edit{
+    color: #FFFFFF;
+}
+.p-to-edit:hover{
+    background: #2980B9;
+    color: #FFFFFF;
+}
+.no-board-infos {
+    width: 100% !important;
+}
+.no-board {
+    line-height: 300px;
+    font-size: 30px;
+    background: #E5E5E5;
+}
+
+.popular-boards {
+    margin: 0 7px;
+}
+.p-pop-board {
+    display: block;
+    float: left;
+    width: 100%;
+    border-bottom: 1px solid #BDC3C7;
+}
+.popular-boards > .p-pop-board:last-child {
+    border-bottom: 0;
+}
+.pop-board-name {
+    display: block;
+    float: left;
+    width: 100%;
+}
+.pop-board-desc {
+    display: block;
+    float: left;
+    width: 100%;
+    margin-bottom: 15px;
+}

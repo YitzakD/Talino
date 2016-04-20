@@ -1,0 +1,116 @@
+.dds ul,
+.dds li,
+.dds span,
+.dds a {
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.dds {
+    width: auto;
+}
+
+.dds:after,
+.dds ul:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.dds a {
+    display: inline-block;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.dds ul {
+    list-style: none;
+}
+.dds > ul {
+    float: left;
+}
+.dds > ul > li {
+    float: left;
+}
+.dds > ul > li:first-child a {
+
+}
+.dds > ul > li.active a,
+.dds > ul > li.active button,
+.dds > ul > li.active input,
+.dds > ul > li.hover button,
+.dds > ul > li:hover > a {
+    background-color: #2980B9;
+}
+.has-sub {
+    z-index: 2;
+}
+.has-sub:hover > ul,
+.has-sub:focus > ul {
+    display: block;
+}
+
+.has-sub ul {
+    display: none;
+    position: absolute;
+    width: 300px;
+    top: 100%;
+    left: 0;
+    background-color: #FFFFFF;
+}
+.has-sub ul li span,
+.has-sub ul li a {
+    display: block;
+    line-height: 160%;
+    font-size: 12px;
+    color: #333333;
+    padding: 5px 9px;
+    text-transform: capitalize;
+    font-weight: 600;
+}
+.has-sub ul li span {
+    font-weight: normal;
+    color: #BDC3C7;
+    font-style: italic;
+}
+.has-sub ul li .dds-head,
+.has-sub ul li .dds-head h2,
+.has-sub ul li .dds-head:hover {
+    background-color: #F5F5F5;
+    border-bottom: 1px solid #BDC3C7;
+    text-decoration: none;
+    color: #333333;
+    cursor: default;
+    font-weight: 600;
+}
+.has-sub ul li .dds-btm:hover {
+    background-color: #2980B9;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+.has-sub ul li a:hover {
+    color: #2980B9;
+    text-decoration: underline;
+}
+.dash-caret-down,
+.dash-caret-down {
+    display: inline-block;
+    max-width: 125px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: top
+}
+.dash-caret-down{
+    display: block
+}
+.dash-caret-down {
+    max-width: 180px
+}
+.dash-caret-down {max-width: 90px}
+.dash-caret-down {max-width: 100%}
+.dash-caret-down {max-width: 315px}
+.dash-caret-down {max-width: none}
+.dash-caret-down {max-width: 195px}
