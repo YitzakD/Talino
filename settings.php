@@ -89,7 +89,7 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
                 $story_msg = "Vous avez modifier vos informations de profile.";
 
-                set_security_story($story_title, $story_msg, get_session('user_id'));
+                set_story_msg($story_title, $story_msg, 'security_story', get_session('user_id'), '');
 
                 set_flash("Vos informations ont été bien mises à jour!", "info");
 
@@ -116,7 +116,7 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
                 $story_msg = "Vous avez modifier vos informations de profile.";
 
-                set_security_story($story_title, $story_msg, get_session('user_id'));
+                set_story_msg($story_title, $story_msg, 'security_story', get_session('user_id'), '');
 
                 set_flash("Félicitations, votre profle a bien été mis à jour!", "succes");
 
@@ -192,7 +192,7 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
                         'id' => get_session('user_id')
                     ]);
 
-                    set_security_story($story_title, $story_msg, get_session('user_id'));
+                    set_story_msg($story_title, $story_msg, 'security_story', get_session('user_id'), '');
 
                     set_flash("Féllicitation votre mot de passe a été bien mis à jour!", "succes");
 
@@ -341,13 +341,13 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
                 set_flash("L'adresse email à été supprimer avec succès!", 'succes');
 
-                redirect_by_intention('settings.php?page=emails&id='.get_session('pseudo'));
+                redirect('settings.php?page=emails&id='.get_session('pseudo'));
 
             } else {
 
                 set_flash("Vous n'avez pas les droits nécessaires pour éffectuer cette opération.", 'danger');
 
-                redirect_by_intention("settings.php?page=emails&id=".get_session('pseudo'));
+                redirect("settings.php?page=emails&id=".get_session('pseudo'));
 
             }
 
@@ -355,7 +355,7 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
             set_flash("Impossible d'éffectuer cette opération.", 'danger');
 
-            redirect_by_intention("settings.php?page=emails&id=".get_session('pseudo'));
+            redirect("settings.php?page=emails&id=".get_session('pseudo'));
 
         }
 
@@ -397,6 +397,12 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
                     'u_id' => get_session('user_id')
                 ]);
 
+                $story_title = "Utilisateur.Email";
+
+                $story_msg = "Vous avez modifier votre email principzle.";
+
+                set_story_msg($story_title, $story_msg, 'security_story', get_session('user_id'), '');
+
                 // Envoyer un mail de notification
                 $to = $getEmail->email;
                 $subject = WEBSITE_NAME . " - NOTIFICATION";
@@ -421,13 +427,13 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
                 set_flash("Vous avez changer votre adresse email principale pour ".$getEmail->email.". Un email de notification a été à cette adresse!", 'info');
 
-                redirect_by_intention('settings.php?page=emails&id='.get_session('pseudo'));
+                redirect('settings.php?page=emails&id='.get_session('pseudo'));
 
             } else {
 
                 set_flash("Vous ne pouvez pas effectuer cette opération.", 'danger');
 
-                redirect_by_intention('settings.php?page=emails&id='.get_session('pseudo'));
+                redirect('settings.php?page=emails&id='.get_session('pseudo'));
 
             }
 
@@ -435,7 +441,7 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
             set_flash("Impossible d'éffectuer cette opération.", 'danger');
 
-            redirect_by_intention("settings.php?page=emails&id=".get_session('pseudo'));
+            redirect("settings.php?page=emails&id=".get_session('pseudo'));
 
         }
 
@@ -533,7 +539,7 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
             $story_msg = "Vous avez changer l'email de réception de notification.";
 
-            set_security_story($story_title, $story_msg, get_session('pseudo'));
+            set_story_msg($story_title, $story_msg, 'security_story', get_session('user_id'), '');
 
             set_flash('Vos mails de notifications seront désormais rédiriger vers cette adresse.','succes');
 
@@ -580,7 +586,7 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
                 $story_msg = "Vous avez supprimé avec sucès un tableau: ".$getBoard->title.".";
 
-                set_story_msg($story_title, $story_msg, 'security_story', get_session('user_id'));
+                set_story_msg($story_title, $story_msg, 'security_story', get_session('user_id'), '');
 
                 $notescounter = cell_count('notes', 'b_id', $getBoard->id);
 
@@ -594,13 +600,13 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
                 set_flash("Vous avez supprimé un tableau!", 'succes');
 
-                redirect_by_intention('settings.php?page=admin.boards&id='.get_session('pseudo'));
+                redirect('settings.php?page=admin.boards&id='.get_session('pseudo'));
 
             } else {
 
                 set_flash("Vous n'avez pas les droits nécessaires pour éffectuer cette opération.", 'danger');
 
-                redirect_by_intention("settings.php?page=admin.boards&id=".get_session('pseudo'));
+                redirect("settings.php?page=admin.boards&id=".get_session('pseudo'));
 
             }
 
@@ -608,7 +614,7 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
             set_flash("Impossible d'éffectuer cette opération.", 'danger');
 
-            redirect_by_intention("settings.php?page=admin.boards&id=".get_session('pseudo'));
+            redirect("settings.php?page=admin.boards&id=".get_session('pseudo'));
 
         }
 
@@ -689,7 +695,6 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
 
         //  Security -> Ip
         $ip = $_SERVER['REMOTE_ADDR'];
-        //  $ip = '41.189.48.122';
         $secu =  json_decode(file_get_contents('http://www.geoplugin.net/json.gp?ip='.$ip));
 
         /*
