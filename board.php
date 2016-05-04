@@ -14,27 +14,9 @@ if(get_session('pseudo') && get_session('user_id')) {
 
         $boardscounter = cell_count('boards', 'u_id', get_session('user_id'));
 
-        $uboards = find_in_table_by_external_key(get_session('user_id'), 'u_id', 'boards', 'order by id asc');
+        $uboards = find_in_table_by_external_key(get_session('user_id'), 'u_id', 'boards', 'and archivate="0"', 'order by id asc');
 
         $notecounter = cell_count('notes', 'u_id', get_session('user_id'));
-
-        /**
-          * var_dump($board->id);
-          * echo "<br />";
-          * var_dump($board->u_id);
-          * echo "<br />";
-          * var_dump($board->title);
-          * echo "<br />";
-          * var_dump($board->description);
-          * echo "<br />";
-          * var_dump($board->status);
-          * echo "<br />";
-          * var_dump($board->last_modif_date);
-          * echo "<br />";
-          * var_dump(get_session('pseudo'));
-          * echo "<br />";
-          * var_dump(get_session('user_id'));
-        */
 
     } else {
 

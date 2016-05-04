@@ -15,13 +15,16 @@ if(!empty($_GET['id']) && $_GET['id'] === get_session('pseudo')) {
     $user = find_user_by_id(get_session('user_id'));
 
     //  Nombre de tables de User
-    $nboard = find_nbr_x_in_table(get_session('user_id'), 'u_id', 'boards');
+    $nboard = cell_count('boards', 'u_id', get_session('user_id'), 'and archivate = "0"');
+    $ncboard = cell_count('boards', 'u_id', get_session('user_id'), 'and archivate = "1"');
 
     //  Toutes les tables de User
-    $boards = find_in_table_by_external_key(get_session('user_id'), 'u_id', 'boards', 'ORDER BY id DESC');
+    $boards = find_in_table_by_external_key(get_session('user_id'), 'u_id', 'boards', 'AND archivate = "0"', 'ORDER BY id DESC');
 
     //  Toutes les tables populaires de User
-    $populaires = find_in_table_by_external_key(get_session('user_id'), 'u_id', 'boards', 'LIMIT 5');
+    $populaires = find_in_table_by_external_key(get_session('user_id'), 'u_id', 'boards', 'and contributions > "160"', 'ORDER BY contributions DESC LIMIT 5');
+
+    $closed = find_in_table_by_external_key(get_session('user_id'), 'u_id', 'boards', 'and archivate="1"', 'limit 5');
 
     //  Transcription de la date d'inscription en Français
     $user->created_at = date_to_fr(strftime("%b %Y", strtotime($user->created_at)));
