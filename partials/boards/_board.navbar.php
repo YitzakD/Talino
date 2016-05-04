@@ -9,13 +9,14 @@
                 <?php foreach ($uboards as $uboard):  ?>
                     <a class="dd-tb" href="board.php?b=<?= e($uboard->link); ?>">
                         <h4><?= get_table_icon(e($uboard->status)); ?>&nbsp;<?= e($uboard->title); ?></h4>
-                        <p><?= e($uboard->description); ?></p>
                     </a>
                 <?php endforeach; ?>
                 <?php if($boardscounter > 3): ?>
-                    <a href="#" class="btn-link">Voire tous les tableaux</a>
+                    <a href="profile.php?id=<?= get_session('pseudo'); ?>&tab=boards" class="btn-link">Voire tous les tableaux</a>
                 <?php endif;  ?>
                 <a href="new.board.php" class="btn-link">Créer un nouveau tableau</a>
+                <div class="divider"></div>
+                <a href="allboards.php?id=<?= get_session('pseudo'); ?>&tab=closed" class="btn-link">Voir les tableau fermés</a>
             </div>
         </div>
         <div class="board-dropdown inlined float-right" id="js-board-menu">

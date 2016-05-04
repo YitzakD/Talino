@@ -4,7 +4,7 @@
 
     <div class="td-content">
 
-        <span class="blocked text-size-1x">
+        <span class="blocked text-size-1x td-color-grey">
             Par défaut, vous recevez les notification <?= WEBSITE_NAME; ?> dans voite boîte mail principale.
         </span>
 

@@ -10,7 +10,10 @@
 
         <label for="email">E-mail<b class="text-danger">*</b></label>
 
-        <input type="email" name="email" id="email" class="form_input" value="<?= get_input('email'); ?>" placeholder="ex., innoss.1203@todo.com" required="required" />
+        <input type="email"
+               name="email" id="email"
+               class="form_input" value="<?= get_input('email'); ?>"
+               placeholder="ex., innoss.1203@talino.com" required="required" />
 
         <label for="password">Mot de passe<b class="text-danger">*</b></label>
 

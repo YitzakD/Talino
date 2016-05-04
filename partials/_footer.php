@@ -9,9 +9,11 @@
 <script src="librairies/liveQuery/jquery.livequery.min.js" type="text/javascript"></script>
 
 <script src="assets/js/main.js" type="text/javascript"></script>
+<script src="assets/js/Talino.dropfile.js" type="text/javascript"></script>
 <script src="assets/js/index.script.js" type="text/javascript"></script>
 <script src="assets/js/progress.bar.script.js" type="text/javascript"></script>
 <script src="assets/js/image.upload.script.js" type="text/javascript"></script>
+<script src="assets/js/load.u.activities.script.js" type="text/javascript"></script>
 <script src="assets/js/board.list.script.js" type="text/javascript"></script>
 
 

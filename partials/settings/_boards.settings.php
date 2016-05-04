@@ -10,19 +10,34 @@
                 <div class="blocked">
                     <span class="inlined"><?= get_table_icon($board->status); ?></span>
                     <span class="inlined">
-                        <a href="board.php?bid=<?= $board->id.'&id='.get_session('pseudo'); ?>"
-                           class="btn-link">
-                            <?= e($board->title); ?>
-                        </a>
+                        <?php if($board->archivate === "1"): ?>
+                            <a href="allboards.php?id=<?= get_session('pseudo'); ?>&tab=closed#<?= e($board->link) ?>"
+                               class="btn-link">
+                                <?= e($board->title); ?>
+                            </a>
+                        <?php else: ?>
+                            <a href="board.php?b=<?= $board->link; ?>"
+                               class="btn-link">
+                                <?= e($board->title); ?>
+                            </a>
+                        <?php endif; ?>
                     </span>
+                    &nbsp;
                     <span class="inlined spanit set-nbr-notes min-raduised text-size-zx">
                         <?php $ncount = cell_count('notes', 'b_id', $board->id); ?>
                         <?= $ncount > 1 ? $ncount.'&nbsp;Notes' : $ncount.'&nbsp;Note'; ?>
                     </span>
+                    &nbsp;
                     <span class="inlined text-size-zx">
                         <?php $board->created_at = date_to_fr(strftime("%d %b %Y", strtotime($board->created_at))); ?>
-                        <?= $board->created_at ? '('.e($board->created_at).')' : ''; ?>
+                        <?= $board->created_at ? '(Créer le '.e($board->created_at).')' : ''; ?>
                     </span>
+                    <?php if($board->archivate === "1"): ?>
+                        &nbsp;
+                        <span class="inlined text-size-1x td-color-grey">
+                            [Ce tableau est fermé}
+                        </span>
+                    <?php endif; ?>
 
                     <span class="inlined float-right text-size-lg">
                         <form  class="form-group inlined" action="settings.php?page=admin.boards&id=<?= get_session('pseudo'); ?>" method="post">

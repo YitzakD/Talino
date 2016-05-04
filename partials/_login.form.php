@@ -6,7 +6,10 @@
 
         <label for="identifiant">Pseudo ou Adresse mail<b class="text-danger">*</b></label>
 
-        <input type="text" name="identifiant" id="identifiant" class="form_input" value="<?= get_input('identifiant'); ?>" placeholder="ex., Innocent ou innoss.1203@todo.com" required="required" />
+        <input type="text" name="identifiant"
+               id="identifiant" class="form_input"
+               value="<?= get_input('identifiant'); ?>"
+               placeholder="ex., Innocent|innoss.1203@talino.com" required="required" />
 
         <label for="password">Mot de passe<b class="text-danger">*</b></label>
 
@@ -21,8 +24,8 @@
 
     </form>
 
-    <p class="log_left">Mot de passe oublié ? <a href="reinitialize.php">Réinitialiser</a>.</p>
+    <p class="log_left text-size-lg">Mot de passe oublié ? <a href="reinitialize.php">Réinitialiser</a>.</p>
 
-    <p class="log_left">Vous n'avez pas encore de compte ? <a href="#ancre_register">Créer un compte <?= WEBSITE_NAME; ?></a>.</p>
+    <p class="log_left text-size-1x">Vous n'avez pas encore de compte ? <a href="#ancre_register">Créer un compte <?= WEBSITE_NAME; ?></a>.</p>
 
 </div>

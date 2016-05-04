@@ -1,7 +1,8 @@
-<span class="p-user-avatar">
-    <a href="settings.php?page=profile&id=<?= get_session('pseudo'); ?>" alt="Changer mon image de profile">
+<span class="p-user-avatar moy-raduised">
+    <a href="settings.php?page=profile&id=<?= get_session('pseudo'); ?>" class="moy-raduised" alt="Changer mon image de profile">
         <img src="<?= $user->avatar != '' ? set_avatar(e($user->id)) : get_avatar(); ?>"
-             alt="<?= e($user->pseudo); ?>" />
+             alt="<?= e($user->pseudo); ?>"
+             class="moy-raduised" />
     </a>
 </span>
 
@@ -70,7 +71,7 @@
     <span class="span-horizontal-group">
          <?= $user->bio
              ? '<span class="span-in-left"><i class="fa fa-paragraph"></i></span>'
-             . '<span class="span-in-right p-u-bio">'.e(read_more($user->bio, 30)).'</span>'
+             . '<span class="span-in-right p-u-bio">'.e(read_more($user->bio, 10)).'...</span>'
              : '';
          ?>
     </span>
@@ -97,7 +98,7 @@
 
     <span class="span-vertical-group">
         <span class="span-in-top bolder nbr-in-color"><?= $nboard; ?></span>
-        <span class="span-in-bottom fields-in-pu"><i class="fa fa-bookmark"></i>&nbsp;<?= $nboard > 1 ? 'Tableaux' : 'Tableau'; ?></span>
+        <span class="span-in-bottom fields-in-pu"><i class="fa fa-lock"></i>&nbsp;<?= $nboard > 1 ? 'Tableaux' : 'Tableau'; ?></span>
     </span>
 
 </span>
@@ -107,7 +108,7 @@
 <span class="p-user-joined-date">
      <span class="span-horizontal-group small-date-text">
         <span class="span-in-left"><i class='fa fa-clock-o'></i></span>
-        <span class="span-in-right">Avec&nbsp;<?= WEBSITE_NAME ?>&nbsp;depuis&nbsp;
+        <span class="span-in-right">Avec&nbsp;<?= WEBSITE_NAME ?>&nbsp;depuis
             <?= e($user->created_at); ?></span>
     </span>
 </span>

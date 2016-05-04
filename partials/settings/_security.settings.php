@@ -55,7 +55,7 @@
         <?php if($hstories): ?>
             <div class="td-content">
 
-                <div class="blocked text-size-1x">
+                <div class="blocked text-size-1x td-color-grey">
                     Ceci est un journal de sécurité des événements importants impliquant votre compte.
                 </div>
 
@@ -67,9 +67,9 @@
 
                 <div class="td-content text-size-1x">
 
-                    <div class="inlined bolder"><?= e($hstory->title) ?></div>
+                    <div class="inlined bolder"><?= $hstory->title; ?></div>
 
-                    <div class="inlined">&nbsp;-&nbsp;<?= e($hstory->description) ?></div>
+                    <div class="inlined">&nbsp;-&nbsp;<?= $hstory->description; ?></div>
 
                     <div class="inlined float-right">
                         <?php
@@ -77,7 +77,7 @@
                             $timestamp->getTimestamp();
                             $timestamp = $timestamp->format('U');
                         ?>
-                        <span class="timeago"><?= set_time($timestamp); ?></span>
+                        <span class="timeago td-color-grey"><?= set_time($timestamp); ?></span>
 
                     </div>
 

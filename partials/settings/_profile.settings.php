@@ -25,7 +25,6 @@
                             <div class="bar"></div >
                             <div class="percent td-color-ld"><i class="fa fa-check"></i></div >
                         </div>
-                        <!--<div class="margin-bottoms-zx" id="loading"><i class="fa fa-spin fa-spinner"></i></div> -->
                         <div class="margin-bottoms-zx" id="errormes"></div>
                         <i class="fa fa-lightbulb-o fa-lg"></i>&nbsp;
                         Grâce à notre algorithme de compression, vos images perdent du poids, mais pas de leur qualité!

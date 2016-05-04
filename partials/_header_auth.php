@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/dropdown.systeme.css">
     <link rel="stylesheet" type="text/css" href="assets/css/dashboard.style.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/board.style.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/allboards.style.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/profile.style.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/newboard.style.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/settings.style.css" />
