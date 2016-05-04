@@ -14,6 +14,7 @@ $menu = [
     'new.boards' => ['fr' => 'Nouveau tableau', 'en' => 'New board'],
     'my.boards' => ['fr' => 'Mes tableaux', 'en' => 'My boards'],
     'board' => ['fr' => 'Tableau', 'en' => 'board'],
+    'allboards' => ['fr' => 'Tous vos tableaux', 'en' => 'All your boards'],
     'settings' => ['fr' => 'Mes paramètres', 'en' => 'My settings'],
     'users' => ['fr' => 'Tous les utilisateurs', 'en' => 'All users'],
     'nouveau' => ['fr' => 'Nouveau tableau', 'en' => 'New board'],

@@ -342,11 +342,11 @@ if(!function_exists('find_table_by_id')) {
 //  cell_count function -> retourne le nombre d'enregistrements trouvés.
 if(!function_exists('cell_count')) {
 
-    function cell_count($table, $field_name, $field_value) {
+    function cell_count($table, $field_name, $field_value, $additional = "") {
 
         global $db;
 
-        $q = $db->prepare("SELECT * FROM $table WHERE $field_name = ?");
+        $q = $db->prepare("SELECT * FROM $table WHERE $field_name = ? $additional");
 
         $q->execute([$field_value]);
 
@@ -641,8 +641,9 @@ if(!function_exists('read_more')) {
         $words = explode(" ",$long_text);
 
         $readmore = implode(" ",array_splice($words,0,$limit));
-
-        $readmore .= "...";
+        if($limit >= 50) {
+            $readmore .= "...";
+        }
 
         return $readmore;
 
@@ -688,6 +689,32 @@ if(!function_exists('set_story_msg')) {
         ]);
 
         $q->closeCursor();
+
+    }
+
+}
+
+// set_contributions -> Permet de faire +1 à ala contribution du tableau
+if(!function_exists('set_contributions')) {
+    function set_contributions($id, $table, $counter, $session) {
+
+        global $db;
+
+        $q = $db->prepare("UPDATE $table
+                           SET
+                           contributions=:contributions,
+                           last_modif_date=:last_modif_date
+                           WHERE id=:id
+                           AND u_id=:u_id");
+
+        $q->execute([
+            'contributions' => $counter,
+            'last_modif_date' => date('Y-m-d H:i:s'),
+            'id' => $id,
+            'u_id' => $session
+        ]);
+
+         $q->closeCursor();
 
     }
 
