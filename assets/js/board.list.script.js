@@ -36,7 +36,7 @@ $(document).ready(function(){
 
             // VARIABLES //
             addlist = $("#js-add-list-form");
-            addnote = $("#js-add-note form.b-add-note");
+            addnote = $("#js-add-note div.b-add-note");
 
             /* Liste */
             addlistBtn = $("#js-list-adder");
@@ -45,17 +45,79 @@ $(document).ready(function(){
             listTitle = $("div#js-list-title");
             listMenubtn = $("div#js-head-list #js-list-menu");
             addnoteMenubtn = $("div#js-list-sub-menu #js-add-note-listmenu");
+            arcListMenubtn = $("div#js-list-sub-menu #js-archivate-thislist");
             $("div#js-list-note").niceScroll({cursorcolor:"#B6B6B4", cursorborder:"#B6B6B4", zindex:"300", cursorborderradius:"3px"});
 
             /* Menu de liste */
             addnoteMenubtn.click(function() {
                 innerparent_1 = $(this).parent("#js-list-sub-menu");
                 innerparent_2 = $(innerparent_1).parent("#js-list-menu");
-                innerparent_3 = $(innerparent_2).parent("#js-head-list");
-                innerparent_4 = $(innerparent_3).parent("#js-list-note");
-                _addnoteBtn = innerparent_4.find("#js-add-note");
+                innerparent_3 = $(innerparent_2).parent("#js-list-header");
+                innerparent_4 = $(innerparent_3).parent("#js-head-list");
+                innerparent_5 = $(innerparent_4).parent("#js-list-note-container");
+                _addnoteBtn = innerparent_5.find("#js-add-note");
                 _addnoteBtn.click();
 
+            });
+            arcListMenubtn.click(function() {
+                listKey = $(this).parent().attr('accesskey');
+                wtdbox = $('<div class="la-closer-warning-box" id="js-la-liste-close-box" />');
+                wtdboxContent = '<div class="td-content-zx">'+
+                                '<div class="la-closer-submit-btn min-raduised align-center cur-to-point" id="js-la-liste-close-lst" accesskey="'+listKey+'"><span class="text-size-1x bolder">Archiver avec le contenu</span></div>'+
+                                '<div class="la-closer-reset-btn min-raduised align-center cur-to-point" id="js-la-liste-reset-lst" accesskey="'+listKey+'"><span class="text-size-1x bolder">Archiver sans le contenu</span></div>'+
+                                '</div>'+
+                                '</div>';
+                wtdbox = $(wtdbox).html(wtdboxContent);
+                wtdbox.appendTo($(this).parent()).insertAfter($(this));
+                aeclistContent = $(wtdbox).find("#js-la-liste-close-lst");
+                sanlistContent = $(wtdbox).find("#js-la-liste-reset-lst");
+                theListKey = $(aeclistContent).attr("accesskey");
+
+                $.post("ajax/_board/ajax.get.all-lists.board.php",{bid:bid, theListKey:theListKey}, function(getListID) {
+                    _wtdboxContent_ = '<div class="td-content-zx">' +
+                                      '<span class="td-color-grey text-size-1x blocked">Choisissez une liste qui receptionera le contenu de cette liste</span>'+
+                                      '<div class="divider margin-bottoms-zx margin-top-zx"></div>'+
+                                      '<label for="listeNameLabel">Déplacer vers</label>'+getListID+
+                                      '<div class="td-div margin-top-zx margin-bottoms-zx">'+
+                                      '<i class="fa fa-close dot-close float-right cur-to-point" id="js-lsa-liste-warning-closer"></i>'+
+                                      '</div>'+
+                                      '<div class="margin-bottoms-zx">'+
+                                      '</div>';
+                });
+                aeclistContent.click(function() {
+                    theListKey = $(this).attr('accesskey');
+                    $.post("ajax/_board/ajax.archivate.list_.php",{bid:bid, theListKey:theListKey},function(listArch_) {
+                        if(listArch_) {
+                            loadboard();
+                        }
+                    });
+                });
+
+                sanlistContent.click(function() {
+                    aeclistContent.fadeOut().hide();
+                    theListKey = $(this).attr('accesskey');
+                    _wtdbox_ = $('<div class="lsa-closer-warning-box" id="js-lsa-liste-close-box" />');
+                    _wtdbox_ = $(_wtdbox_).html(_wtdboxContent_);
+                    _wtdbox_.appendTo($(this).parent()).insertAfter($(this));
+                    closerListeArcCloser = $(wtdbox).find("#js-lsa-liste-warning-closer");
+                    _listSelect_ = $(_wtdbox_).find("#js-select-listID");
+
+                    _listSelect_.change(function() {
+                        newListID = $(this).val();
+                        if(newListID !== "") {
+                            $.post("ajax/_board/ajax.archivate.list.php",{bid:bid, newListID:newListID, theListKey:theListKey},function(listArch) {
+                                if(listArch) {
+                                    loadboard();
+                                }
+                            });
+                        }
+                    });
+                    closerListeArcCloser.click(function() {
+                        _wtdbox_.remove();
+                        aeclistContent.fadeIn().show();
+                        loadboard();
+                    });
+                });
             });
 
             addlist.hide();
@@ -157,11 +219,9 @@ $(document).ready(function(){
             addnoteBtn.click(function() {
                 $(this).css("margin-top", "10px");
                 spantohide = $(this).find("span.b-note-adder");
-                formtounwrap = $(this).find("form");
+                formtounwrap = $(this).find("div.b-add-note");
                 resetbtn = $(this).find("button[type=reset]");
                 textareatofocus = $(this).find("textarea#js-add-note-input");
-
-                //  submitnote = $(this).find("button#js-note-submitter");
 
                 lid = $(this).find("input#js-list-hid").val();
                 responseBox = formtounwrap.find("div#js-list-response");
@@ -177,25 +237,21 @@ $(document).ready(function(){
                 jQuery(textareatofocus).trigger('update');
                 spantohide.hide();
 
-                function savenote(){
-                    textareatofocus.keyup(function(e){
-                        notename = textareatofocus.val();
+                textareatofocus.keyup(function(e){
+                    notename = textareatofocus.val();
 
-                        notename = $.trim(notename);
-                        if(e.keyCode === 13 && e.shiftKey === false && lid !== "") {
-                            if(notename !== "" ) {
-                                $.post("ajax/_board/ajax.add.note.php", {lid:lid, bid:bid, notename:notename}, function(){
-                                    loadboard();
-                                    textareatofocus.val("");
-                                    loadboard();
-                                });
-                            } else {
-                                responseBox.show().html("<i class='fa fa-times'></i> Vous devez remplir tous les champs");
-                            }
+                    notename = $.trim(notename);
+                    if(e.keyCode === 13 && e.shiftKey === false && lid !== "") {
+                        if(notename !== "" ) {
+                            $.post("ajax/_board/ajax.add.note.php", {lid:lid, bid:bid, notename:notename}, function(){
+                                textareatofocus.val("");
+                                loadboard();
+                            });
+                        } else {
+                            responseBox.show().html("<i class='fa fa-times'></i> Vous devez remplir tous les champs");
                         }
-                    });
-                }
-                savenote();
+                    }
+                });
 
                 resetbtn.focus(function() {
                     spantohide.fadeIn();
@@ -235,6 +291,7 @@ $(document).ready(function(){
                         _note_popsucces = $("#js-pop-alert-succes");
                         _note_popalert = $("#js-pop-alert-errors");
                         _note_popinfos = $("#js-pop-alert-infos");
+                        dropzone = $(pushercontainer).find("div.dropzone");
 
                         _note_popalert.hide();
                         _note_popinfos.hide();
@@ -301,6 +358,96 @@ $(document).ready(function(){
                         }
                         $("#js-editable-block-note").click(noteClicked);
                         // Fin Edition de note //
+
+
+                        // Dropzone //
+                        $(dropzone).dropfile({
+                            clone : false,
+                            complete : function(json) {
+                                $.post('ajax/_notes/ajax.note-file.upnote.php',{bid:bid, note_id:note_id, filename:json.name},function(upfile){
+                                    if(upfile) {
+                                        spinner.fadeOut(3000);
+                                        notesucced();
+                                        loadboard();
+                                        _note_popsucces.show();
+                                        _note_popsucces.fadeOut(5000);
+                                    } else {
+                                        spinner.fadeOut();
+                                        _note_popalert.show();
+                                        _note_popalert.fadeOut(5000);
+                                    }
+                                });
+                            }
+                        });
+                        noteImage = $("div.note-image-file").find("img");
+                        imgName = $("div.note-image-file").find("img").attr("accesskey");
+                        viewNoteImg = $("div.note-image-file").find("span.js-view-nif");
+                        supNoteImg = $("div.note-image-file").find("span.js-sup-nif");
+                        viewNoteImg.click(function() {
+                            selfImage = $('<div class="selfImage"><img src="'+imgName+'" /></div>');
+                            closeImageBox = $('<span class="btn btn-warm float-right bfCloser"><i class="fa fa-close" /></span>');
+                            blackFilter = $('<div class="blackFilter">').append($(closeImageBox)).appendTo('body').fadeIn();
+                            blackFilter = blackFilter.append($(selfImage)).appendTo('body').fadeIn();
+
+                            closeImageBox.click(function() {
+                                blackFilter.fadeOut().remove();
+                            });
+                        });
+                        noteImage.click(function() {
+                            selfImage = $('<div class="selfImage"><img src="'+imgName+'" /></div>');
+                            closeImageBox = $('<span class="btn btn-warm float-right bfCloser"><i class="fa fa-close" /></span>');
+                            blackFilter = $('<div class="blackFilter">').append($(closeImageBox)).appendTo('body').fadeIn();
+                            blackFilter = blackFilter.append($(selfImage)).appendTo('body').fadeIn();
+
+                            closeImageBox.click(function() {
+                                blackFilter.fadeOut().remove();
+                            });
+                        });
+                        supNoteImg.click(function() {
+                            wtdbox = $('<div class="no-closer-warning-box min-raduised" id="js-no-image-close-box" />');
+                            wtdboxContent = '<div class="td-content">'+
+                                            '<div class="no-closer-title align-center td-color-grey">Action'+
+                                            '<i class="fa fa-close dot-close float-right cur-to-point" id="js-no-image-warning-closer"></i>'+
+                                            '</div>'+
+                                            '<div class="margin-top-zx no-closer-content-box td-div">Voulez-vrous vraiment faire ceci ?'+
+                                            '</div>'+
+                                            '<div class="clearer margin-bottoms-zx"></div><div class="divider"></div>'+
+                                            '<div class="td-div margin-top-zx margin-bottoms-zx">'+
+                                            '<div class="no-closer-submit-btn min-raduised align-center cur-to-point float-right" id="js-no-image-close-img"><span class="bolder">Oui</span></div>'+
+                                            '<div class="no-closer-reset-btn min-raduised align-center cur-to-point float-right" id="js-no-image-reset-img"><span class="bolder">Non</span></div>'+
+                                            '</div>'+
+                                            '</div>';
+                             wtdbox = $(wtdbox).html(wtdboxContent); 
+                             wtdbox.appendTo($(this).parent()).insertAfter($(this));
+                             closerNoteImgCloser = wtdbox.find("#js-no-image-warning-closer");
+                             closerNoteImgBtn = wtdbox.find("#js-no-image-close-img");
+                             closerNoteImgBoxBtn = wtdbox.find("#js-no-image-reset-img");
+                             
+                             closerNoteImgCloser.click(function() {
+                                 wtdbox.remove();
+                                 loadboard();
+                             });
+                             closerNoteImgBoxBtn.click(function() {
+                                 wtdbox.remove();
+                                 loadboard();
+                             });
+                             closerNoteImgBtn.click(function() {
+                                $.post("ajax/_notes/ajax.note-file.delete.php", {bid:bid, note_id:note_id, imgName:imgName}, function(suppImage) {
+                                   if(suppImage) {
+                                       spinner.fadeOut(3000);
+                                       notesucced();
+                                       loadboard();
+                                       _note_popsucces.show();
+                                       _note_popsucces.fadeOut(5000);
+                                   } else {
+                                       spinner.fadeOut();
+                                       _note_popalert.show();
+                                       _note_popalert.fadeOut(5000);
+                                   }
+                               });
+                             });
+                        });
+                        // Fin dropzone //
 
 
                         // Changement de couleur //
@@ -473,6 +620,7 @@ $(document).ready(function(){
                         _note_popalert = $("#js-pop-alert-errors");
                         editablenote = $("#js-editable-block-note");
                         editabledesc = $("#js-editable-block-desc");
+                        dropzone = $(pushercontainer).find("div.dropzone");
 
                         _note_popsucces.hide();
                         _note_popalert.hide();
@@ -522,7 +670,6 @@ $(document).ready(function(){
                             if(editableText.blur()) {
                                 spinner.insertAfter(this);
                                 $.post('ajax/_notes/ajax.note.upnote.php',{note_id:note_id, html:html, bid:bid},function(upnote){
-
                                     if(upnote) {
                                         spinner.fadeOut(3000);
                                         notesucced();
@@ -542,6 +689,96 @@ $(document).ready(function(){
                         }
                         editablenote.click(noteClicked);
                         // Fin Edition de note //
+
+
+                        // Dropzone //
+                        $(dropzone).dropfile({
+                            clone : false,
+                            complete : function(json) {
+                                $.post('ajax/_notes/ajax.note-file.upnote.php',{bid:bid, note_id:note_id, filename:json.name},function(upfile){
+                                    if(upfile) {
+                                        spinner.fadeOut(3000);
+                                        notesucced();
+                                        loadboard();
+                                        _note_popsucces.show();
+                                        _note_popsucces.fadeOut(5000);
+                                    } else {
+                                        spinner.fadeOut();
+                                        _note_popalert.show();
+                                        _note_popalert.fadeOut(5000);
+                                    }
+                                });
+                            }
+                        });
+                        noteImage = $("div.note-image-file").find("img");
+                        imgName = $("div.note-image-file").find("img").attr("accesskey");
+                        viewNoteImg = $("div.note-image-file").find("span.js-view-nif");
+                        supNoteImg = $("div.note-image-file").find("span.js-sup-nif");
+                        viewNoteImg.click(function() {
+                            selfImage = $('<div class="selfImage"><img src="'+imgName+'" /></div>');
+                            closeImageBox = $('<span class="btn btn-warm float-right bfCloser"><i class="fa fa-close" /></span>');
+                            blackFilter = $('<div class="blackFilter">').append($(closeImageBox)).appendTo('body').fadeIn();
+                            blackFilter = blackFilter.append($(selfImage)).appendTo('body').fadeIn();
+
+                            closeImageBox.click(function() {
+                                blackFilter.fadeOut().remove();
+                            });
+                        });
+                        noteImage.click(function() {
+                            selfImage = $('<div class="selfImage"><img src="'+imgName+'" /></div>');
+                            closeImageBox = $('<span class="btn btn-warm float-right bfCloser"><i class="fa fa-close" /></span>');
+                            blackFilter = $('<div class="blackFilter">').append($(closeImageBox)).appendTo('body').fadeIn();
+                            blackFilter = blackFilter.append($(selfImage)).appendTo('body').fadeIn();
+
+                            closeImageBox.click(function() {
+                                blackFilter.fadeOut().remove();
+                            });
+                        });
+                        supNoteImg.click(function() {
+                            wtdbox = $('<div class="no-closer-warning-box min-raduised" id="js-no-image-close-box" />');
+                            wtdboxContent = '<div class="td-content">'+
+                                '<div class="no-closer-title align-center td-color-grey">Action'+
+                                '<i class="fa fa-close dot-close float-right cur-to-point" id="js-no-image-warning-closer"></i>'+
+                                '</div>'+
+                                '<div class="margin-top-zx no-closer-content-box td-div">Voulez-vrous vraiment faire ceci ?'+
+                                '</div>'+
+                                '<div class="clearer margin-bottoms-zx"></div><div class="divider"></div>'+
+                                '<div class="td-div margin-top-zx margin-bottoms-zx">'+
+                                '<div class="no-closer-submit-btn min-raduised align-center cur-to-point float-right" id="js-no-image-close-img"><span class="bolder">Oui</span></div>'+
+                                '<div class="no-closer-reset-btn min-raduised align-center cur-to-point float-right" id="js-no-image-reset-img"><span class="bolder">Non</span></div>'+
+                                '</div>'+
+                                '</div>';
+                            wtdbox = $(wtdbox).html(wtdboxContent);
+                            wtdbox.appendTo($(this).parent()).insertAfter($(this));
+                            closerNoteImgCloser = wtdbox.find("#js-no-image-warning-closer");
+                            closerNoteImgBtn = wtdbox.find("#js-no-image-close-img");
+                            closerNoteImgBoxBtn = wtdbox.find("#js-no-image-reset-img");
+
+                            closerNoteImgCloser.click(function() {
+                                wtdbox.remove();
+                                loadboard();
+                            });
+                            closerNoteImgBoxBtn.click(function() {
+                                wtdbox.remove();
+                                loadboard();
+                            });
+                            closerNoteImgBtn.click(function() {
+                                $.post("ajax/_notes/ajax.note-file.delete.php", {bid:bid, note_id:note_id, imgName:imgName}, function(suppImage) {
+                                    if(suppImage) {
+                                        spinner.fadeOut(3000);
+                                        notesucced();
+                                        loadboard();
+                                        _note_popsucces.show();
+                                        _note_popsucces.fadeOut(5000);
+                                    } else {
+                                        spinner.fadeOut();
+                                        _note_popalert.show();
+                                        _note_popalert.fadeOut(5000);
+                                    }
+                                });
+                            });
+                        });
+                        // Fin dropzone //
 
 
                         // Changement de couleur //
@@ -817,8 +1054,28 @@ $(document).ready(function(){
                 parameters.css("right", "0");
                 parameters.niceScroll({cursorcolor:"#B6B6B4", cursorborder:"#B6B6B4", zindex:"94", cursorborderradius:"3px"});
 
+                boardCloserBox = $("<div class='pm-closer-warning-box min-raduised' id='js-pm-closer-wern-box' />");
+                boardCloserBoxContent = '<div class="td-content">'+
+                                        '<div class="pm-closer-title align-center td-color-grey">Fermer le tableau ?'+
+                                        '<i class="fa fa-close dot-close float-right cur-to-point" id="js-closer-warning-closer"></i>'+
+                                        '</div>'+
+                                        '<div class="pm-closer-content-box td-div">'+
+                                        'Vous pouvez ré-ouvrir le tableau en cliquant sur le menu « Tableau » dans l\'en-tête, puis en sélectionnant « Afficher les tableaux fermés » ; trouvez alors le tableau souhaité et cliquez sur « Ré-ouvrir ».'+
+                                        '</div>'+
+                                        '<div class="clearer margin-bottoms-zx"></div>'+
+                                        '<div class="divider"></div>'+
+                                        '<div class="pm-closer-content-box td-div td-color-grey">'+
+                                        'Le tableau et tous son contenu seront archivé'+
+                                        '</div>'+
+                                        '<div class="td-div margin-top-zx margin-bottoms-zx">'+
+                                        '<div class="pm-closer-submit-btn min-raduised align-center cur-to-point" id="js-pm-close-baord">'+
+                                        '<span class="text-danger bolder">Fermer</span>'+
+                                        '</div>'+
+                                        '</div>'+
+                                        '</div>';
+                boardCloserBox = $(boardCloserBox).html(boardCloserBoxContent);
                 function loadparams(){
-                    $.post("ajax/_menu/ajax.params.menu.php", function(_parameters) {
+                    $.post("ajax/_menu/ajax.params.menu.php", {bid:bid}, function(_parameters) {
                         parameters.html(_parameters);
                         closer = parameters.find("#js-close-opened");
                         titlebox = parameters.find("#js-menu-one");
@@ -862,7 +1119,7 @@ $(document).ready(function(){
 
                                                     // VARIABLES //
                                                     addlist = $("#js-add-list-form");
-                                                    addnote = $("#js-add-note form.b-add-note");
+                                                    addnote = $("#js-add-note div.b-add-note");
 
                                                     /* Liste */
                                                     addlistBtn = $("#js-list-adder");
@@ -871,17 +1128,81 @@ $(document).ready(function(){
                                                     listTitle = $("div#js-list-title");
                                                     listMenubtn = $("div#js-head-list #js-list-menu");
                                                     addnoteMenubtn = $("div#js-list-sub-menu #js-add-note-listmenu");
+                                                    arcListMenubtn = $("div#js-list-sub-menu #js-archivate-thislist");
                                                     $("div#js-list-note").niceScroll({cursorcolor:"#B6B6B4", cursorborder:"#B6B6B4", zindex:"300", cursorborderradius:"3px"});
 
                                                     /* Menu de liste */
                                                     addnoteMenubtn.click(function() {
                                                         innerparent_1 = $(this).parent("#js-list-sub-menu");
                                                         innerparent_2 = $(innerparent_1).parent("#js-list-menu");
-                                                        innerparent_3 = $(innerparent_2).parent("#js-head-list");
-                                                        innerparent_4 = $(innerparent_3).parent("#js-list-note");
-                                                        _addnoteBtn = innerparent_4.find("#js-add-note");
+                                                        innerparent_3 = $(innerparent_2).parent("#js-list-header");
+                                                        innerparent_4 = $(innerparent_3).parent("#js-head-list");
+                                                        innerparent_5 = $(innerparent_4).parent("#js-list-note-container");
+                                                        _addnoteBtn = innerparent_5.find("#js-add-note");
                                                         _addnoteBtn.click();
 
+                                                    });
+
+                                                    arcListMenubtn.click(function() {
+                                                        listKey = $(this).parent().attr('accesskey');
+                                                        wtdbox = $('<div class="la-closer-warning-box" id="js-la-liste-close-box" />');
+                                                        wtdboxContent = '<div class="td-content-zx">'+
+                                                            '<div class="la-closer-submit-btn min-raduised align-center cur-to-point" id="js-la-liste-close-lst" accesskey="'+listKey+'"><span class="text-size-1x bolder">Archiver avec le contenu</span></div>'+
+                                                            '<div class="la-closer-reset-btn min-raduised align-center cur-to-point" id="js-la-liste-reset-lst" accesskey="'+listKey+'"><span class="text-size-1x bolder">Archiver sans le contenu</span></div>'+
+                                                            '</div>'+
+                                                            '</div>';
+                                                        wtdbox = $(wtdbox).html(wtdboxContent);
+                                                        wtdbox.appendTo($(this).parent()).insertAfter($(this));
+                                                        aeclistContent = $(wtdbox).find("#js-la-liste-close-lst");
+                                                        sanlistContent = $(wtdbox).find("#js-la-liste-reset-lst");
+                                                        theListKey = $(aeclistContent).attr("accesskey");
+
+                                                        $.post("ajax/_board/ajax.get.all-lists.board.php",{bid:bid, theListKey:theListKey}, function(getListID) {
+                                                            _wtdboxContent_ = '<div class="td-content-zx">' +
+                                                                '<span class="td-color-grey text-size-1x blocked">Choisissez une liste qui receptionera le contenu de cette liste</span>'+
+                                                                '<div class="divider margin-bottoms-zx margin-top-zx"></div>'+
+                                                                '<label for="listeNameLabel">Déplacer vers</label>'+getListID+
+                                                                '<div class="td-div margin-top-zx margin-bottoms-zx">'+
+                                                                '<i class="fa fa-close dot-close float-right cur-to-point" id="js-lsa-liste-warning-closer"></i>'+
+                                                                '</div>'+
+                                                                '<div class="margin-bottoms-zx">'+
+                                                                '</div>';
+                                                        });
+
+                                                        aeclistContent.click(function() {
+                                                            theListKey = $(this).attr('accesskey');
+                                                            $.post("ajax/_board/ajax.archivate.list_.php",{bid:bid, theListKey:theListKey},function(listArch_) {
+                                                                if(listArch_) {
+                                                                    loadboard();
+                                                                }
+                                                            });
+                                                        });
+
+                                                        sanlistContent.click(function() {
+                                                            aeclistContent.fadeOut().hide();
+                                                            theListKey = $(this).attr('accesskey');
+                                                            _wtdbox_ = $('<div class="lsa-closer-warning-box" id="js-lsa-liste-close-box" />');
+                                                            _wtdbox_ = $(_wtdbox_).html(_wtdboxContent_);
+                                                            _wtdbox_.appendTo($(this).parent()).insertAfter($(this));
+                                                            closerListeArcCloser = $(wtdbox).find("#js-lsa-liste-warning-closer");
+                                                            _listSelect_ = $(_wtdbox_).find("#js-select-listID");
+
+                                                            _listSelect_.change(function() {
+                                                                newListID = $(this).val();
+                                                                if(newListID !== "") {
+                                                                    $.post("ajax/_board/ajax.archivate.list.php",{bid:bid, newListID:newListID, theListKey:theListKey},function(listArch) {
+                                                                        if(listArch) {
+                                                                            loadboard();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                            closerListeArcCloser.click(function() {
+                                                                _wtdbox_.remove();
+                                                                aeclistContent.fadeIn().show();
+                                                                loadboard();
+                                                            });
+                                                        });
                                                     });
 
                                                     addlist.hide();
@@ -983,7 +1304,7 @@ $(document).ready(function(){
                                                     addnoteBtn.click(function() {
                                                         $(this).css("margin-top", "10px");
                                                         spantohide = $(this).find("span.b-note-adder");
-                                                        formtounwrap = $(this).find("form");
+                                                        formtounwrap = $(this).find("div.b-add-note");
                                                         resetbtn = $(this).find("button[type=reset]");
                                                         textareatofocus = $(this).find("textarea#js-add-note-input");
 
@@ -1061,6 +1382,7 @@ $(document).ready(function(){
                                                                 _note_popsucces = $("#js-pop-alert-succes");
                                                                 _note_popalert = $("#js-pop-alert-errors");
                                                                 _note_popinfos = $("#js-pop-alert-infos");
+                                                                dropzone = $(pushercontainer).find("div.dropzone");
 
                                                                 _note_popalert.hide();
                                                                 _note_popinfos.hide();
@@ -1127,6 +1449,96 @@ $(document).ready(function(){
                                                                 }
                                                                 $("#js-editable-block-note").click(noteClicked);
                                                                 // Fin Edition de note //
+
+
+                                                                // Dropzone //
+                                                                $(dropzone).dropfile({
+                                                                    clone : false,
+                                                                    complete : function(json) {
+                                                                        $.post('ajax/_notes/ajax.note-file.upnote.php',{bid:bid, note_id:note_id, filename:json.name},function(upfile){
+                                                                            if(upfile) {
+                                                                                spinner.fadeOut(3000);
+                                                                                notesucced();
+                                                                                reloadBoardBy();
+                                                                                _note_popsucces.show();
+                                                                                _note_popsucces.fadeOut(5000);
+                                                                            } else {
+                                                                                spinner.fadeOut();
+                                                                                _note_popalert.show();
+                                                                                _note_popalert.fadeOut(5000);
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                                noteImage = $("div.note-image-file").find("img");
+                                                                imgName = $("div.note-image-file").find("img").attr("accesskey");
+                                                                viewNoteImg = $("div.note-image-file").find("span.js-view-nif");
+                                                                supNoteImg = $("div.note-image-file").find("span.js-sup-nif");
+                                                                viewNoteImg.click(function() {
+                                                                    selfImage = $('<div class="selfImage"><img src="'+imgName+'" /></div>');
+                                                                    closeImageBox = $('<span class="btn btn-warm float-right bfCloser"><i class="fa fa-close" /></span>');
+                                                                    blackFilter = $('<div class="blackFilter">').append($(closeImageBox)).appendTo('body').fadeIn();
+                                                                    blackFilter = blackFilter.append($(selfImage)).appendTo('body').fadeIn();
+
+                                                                    closeImageBox.click(function() {
+                                                                        blackFilter.fadeOut().remove();
+                                                                    });
+                                                                });
+                                                                noteImage.click(function() {
+                                                                    selfImage = $('<div class="selfImage"><img src="'+imgName+'" /></div>');
+                                                                    closeImageBox = $('<span class="btn btn-warm float-right bfCloser"><i class="fa fa-close" /></span>');
+                                                                    blackFilter = $('<div class="blackFilter">').append($(closeImageBox)).appendTo('body').fadeIn();
+                                                                    blackFilter = blackFilter.append($(selfImage)).appendTo('body').fadeIn();
+
+                                                                    closeImageBox.click(function() {
+                                                                        blackFilter.fadeOut().remove();
+                                                                    });
+                                                                });
+                                                                supNoteImg.click(function() {
+                                                                    wtdbox = $('<div class="no-closer-warning-box min-raduised" id="js-no-image-close-box" />');
+                                                                    wtdboxContent = '<div class="td-content">'+
+                                                                        '<div class="no-closer-title align-center td-color-grey">Action'+
+                                                                        '<i class="fa fa-close dot-close float-right cur-to-point" id="js-no-image-warning-closer"></i>'+
+                                                                        '</div>'+
+                                                                        '<div class="margin-top-zx no-closer-content-box td-div">Voulez-vrous vraiment faire ceci ?'+
+                                                                        '</div>'+
+                                                                        '<div class="clearer margin-bottoms-zx"></div><div class="divider"></div>'+
+                                                                        '<div class="td-div margin-top-zx margin-bottoms-zx">'+
+                                                                        '<div class="no-closer-submit-btn min-raduised align-center cur-to-point float-right" id="js-no-image-close-img"><span class="bolder">Oui</span></div>'+
+                                                                        '<div class="no-closer-reset-btn min-raduised align-center cur-to-point float-right" id="js-no-image-reset-img"><span class="bolder">Non</span></div>'+
+                                                                        '</div>'+
+                                                                        '</div>';
+                                                                    wtdbox = $(wtdbox).html(wtdboxContent);
+                                                                    wtdbox.appendTo($(this).parent()).insertAfter($(this));
+                                                                    closerNoteImgCloser = wtdbox.find("#js-no-image-warning-closer");
+                                                                    closerNoteImgBtn = wtdbox.find("#js-no-image-close-img");
+                                                                    closerNoteImgBoxBtn = wtdbox.find("#js-no-image-reset-img");
+
+                                                                    closerNoteImgCloser.click(function() {
+                                                                        wtdbox.remove();
+                                                                        reloadBoardBy();
+                                                                    });
+                                                                    closerNoteImgBoxBtn.click(function() {
+                                                                        wtdbox.remove();
+                                                                        reloadBoardBy();
+                                                                    });
+                                                                    closerNoteImgBtn.click(function() {
+                                                                        $.post("ajax/_notes/ajax.note-file.delete.php", {bid:bid, note_id:note_id, imgName:imgName}, function(suppImage) {
+                                                                            if(suppImage) {
+                                                                                spinner.fadeOut(3000);
+                                                                                notesucced();
+                                                                                reloadBoardBy();
+                                                                                _note_popsucces.show();
+                                                                                _note_popsucces.fadeOut(5000);
+                                                                            } else {
+                                                                                spinner.fadeOut();
+                                                                                _note_popalert.show();
+                                                                                _note_popalert.fadeOut(5000);
+                                                                            }
+                                                                        });
+                                                                    });
+                                                                });
+                                                                // Fin dropzone //
 
 
                                                                 // Changement de couleur //
@@ -1299,6 +1711,7 @@ $(document).ready(function(){
                                                                 _note_popalert = $("#js-pop-alert-errors");
                                                                 editablenote = $("#js-editable-block-note");
                                                                 editabledesc = $("#js-editable-block-desc");
+                                                                dropzone = $(pushercontainer).find("div.dropzone");
 
                                                                 _note_popsucces.hide();
                                                                 _note_popalert.hide();
@@ -1368,6 +1781,96 @@ $(document).ready(function(){
                                                                 }
                                                                 editablenote.click(noteClicked);
                                                                 // Fin Edition de note //
+
+
+                                                                // Dropzone //
+                                                                $(dropzone).dropfile({
+                                                                    clone : false,
+                                                                    complete : function(json) {
+                                                                        $.post('ajax/_notes/ajax.note-file.upnote.php',{bid:bid, note_id:note_id, filename:json.name},function(upfile){
+                                                                            if(upfile) {
+                                                                                spinner.fadeOut(3000);
+                                                                                notesucced();
+                                                                                reloadBoardBy();
+                                                                                _note_popsucces.show();
+                                                                                _note_popsucces.fadeOut(5000);
+                                                                            } else {
+                                                                                spinner.fadeOut();
+                                                                                _note_popalert.show();
+                                                                                _note_popalert.fadeOut(5000);
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                                noteImage = $("div.note-image-file").find("img");
+                                                                imgName = $("div.note-image-file").find("img").attr("accesskey");
+                                                                viewNoteImg = $("div.note-image-file").find("span.js-view-nif");
+                                                                supNoteImg = $("div.note-image-file").find("span.js-sup-nif");
+                                                                viewNoteImg.click(function() {
+                                                                    selfImage = $('<div class="selfImage"><img src="'+imgName+'" /></div>');
+                                                                    closeImageBox = $('<span class="btn btn-warm float-right bfCloser"><i class="fa fa-close" /></span>');
+                                                                    blackFilter = $('<div class="blackFilter">').append($(closeImageBox)).appendTo('body').fadeIn();
+                                                                    blackFilter = blackFilter.append($(selfImage)).appendTo('body').fadeIn();
+
+                                                                    closeImageBox.click(function() {
+                                                                        blackFilter.fadeOut().remove();
+                                                                    });
+                                                                });
+                                                                noteImage.click(function() {
+                                                                    selfImage = $('<div class="selfImage"><img src="'+imgName+'" /></div>');
+                                                                    closeImageBox = $('<span class="btn btn-warm float-right bfCloser"><i class="fa fa-close" /></span>');
+                                                                    blackFilter = $('<div class="blackFilter">').append($(closeImageBox)).appendTo('body').fadeIn();
+                                                                    blackFilter = blackFilter.append($(selfImage)).appendTo('body').fadeIn();
+
+                                                                    closeImageBox.click(function() {
+                                                                        blackFilter.fadeOut().remove();
+                                                                    });
+                                                                });
+                                                                supNoteImg.click(function() {
+                                                                    wtdbox = $('<div class="no-closer-warning-box min-raduised" id="js-no-image-close-box" />');
+                                                                    wtdboxContent = '<div class="td-content">'+
+                                                                        '<div class="no-closer-title align-center td-color-grey">Action'+
+                                                                        '<i class="fa fa-close dot-close float-right cur-to-point" id="js-no-image-warning-closer"></i>'+
+                                                                        '</div>'+
+                                                                        '<div class="margin-top-zx no-closer-content-box td-div">Voulez-vrous vraiment faire ceci ?'+
+                                                                        '</div>'+
+                                                                        '<div class="clearer margin-bottoms-zx"></div><div class="divider"></div>'+
+                                                                        '<div class="td-div margin-top-zx margin-bottoms-zx">'+
+                                                                        '<div class="no-closer-submit-btn min-raduised align-center cur-to-point float-right" id="js-no-image-close-img"><span class="bolder">Oui</span></div>'+
+                                                                        '<div class="no-closer-reset-btn min-raduised align-center cur-to-point float-right" id="js-no-image-reset-img"><span class="bolder">Non</span></div>'+
+                                                                        '</div>'+
+                                                                        '</div>';
+                                                                    wtdbox = $(wtdbox).html(wtdboxContent);
+                                                                    wtdbox.appendTo($(this).parent()).insertAfter($(this));
+                                                                    closerNoteImgCloser = wtdbox.find("#js-no-image-warning-closer");
+                                                                    closerNoteImgBtn = wtdbox.find("#js-no-image-close-img");
+                                                                    closerNoteImgBoxBtn = wtdbox.find("#js-no-image-reset-img");
+
+                                                                    closerNoteImgCloser.click(function() {
+                                                                        wtdbox.remove();
+                                                                        reloadBoardBy();
+                                                                    });
+                                                                    closerNoteImgBoxBtn.click(function() {
+                                                                        wtdbox.remove();
+                                                                        reloadBoardBy();
+                                                                    });
+                                                                    closerNoteImgBtn.click(function() {
+                                                                        $.post("ajax/_notes/ajax.note-file.delete.php", {bid:bid, note_id:note_id, imgName:imgName}, function(suppImage) {
+                                                                            if(suppImage) {
+                                                                                spinner.fadeOut(3000);
+                                                                                notesucced();
+                                                                                reloadBoardBy();
+                                                                                _note_popsucces.show();
+                                                                                _note_popsucces.fadeOut(5000);
+                                                                            } else {
+                                                                                spinner.fadeOut();
+                                                                                _note_popalert.show();
+                                                                                _note_popalert.fadeOut(5000);
+                                                                            }
+                                                                        });
+                                                                    });
+                                                                });
+                                                                // Fin dropzone //
 
 
                                                                 // Changement de couleur //
@@ -1568,17 +2071,76 @@ $(document).ready(function(){
                         goArchivs.click(function() {
                             archsbox.css('right', '0');
                             archsbox.niceScroll({cursorcolor:"#B6B6B4", cursorborder:"#B6B6B4", zindex:"94", cursorborderradius:"3px"});
+
                             function aboutarchives() {
                                 $.post('ajax/_menu/params/archivates_elmt.menu.php', {bid:bid}, function(gotArchives) {
                                     archsbox.html(gotArchives);
+
                                     closer = archsbox.find("#js-close-opened");
                                     titlebox = archsbox.find("#js-menu-one");
+                                    _archivedNoteBtn = $("#archsHeader label#js-note-archs");
+                                    _archivedListBtn = $("#archsHeader label#js-list-archs");
 
+                                    _archivedList = $("#js-archived-content div#js-archived-list-pm");
+                                    _archivedNotes = $("#js-archived-content div#js-archived-notes-pm");
+                                    noteRestaure = $(_archivedNotes).find("div#js-archivedNote-subMenu span#js-pma-noteRestaure");
+                                    noteDelete = $(_archivedNotes).find("div#js-archivedNote-subMenu span#js-pma-noteDelete");
+                                    listeRestaure = $(_archivedList).find("div#js-archivedListe-subMenu span#js-pma-ListRestaure");
+
+                                    _archivedNotes.show();
+                                    _archivedList.hide();
                                     titlebox.css("position", "fixed").css("z-index", "10");
+
+                                    _archivedNoteBtn.click(function() {
+                                        _archivedList.hide();
+                                        _archivedNotes.show();
+                                    });
+                                    noteRestaure.click(function() {
+                                        _noteRestaure = $(this).attr("accesskey");
+                                        $.post("ajax/_menu/params/archives/note.torestaure.php", {_noteRestaure:_noteRestaure},
+                                            function(upNoteRestaure) {
+                                                if(upNoteRestaure){
+                                                    closer.click();
+                                                    goArchivs.click();
+                                                    loadboard();
+                                                }
+                                            });
+                                    });
+                                    noteDelete.click(function() {
+                                        _noteDelete = $(this).attr("accesskey");
+                                        $.post("ajax/_menu/params/archives/note.todelete.php", {_noteDelete:_noteDelete},
+                                            function(upNoteDel) {
+                                                if(upNoteDel == "Deleted"){
+                                                    closer.click();
+                                                    goArchivs.click();
+                                                    loadboard();
+                                                }
+                                            });
+                                    });
+
+                                    _archivedListBtn.click(function() {
+                                        _archivedNotes.hide();
+                                        _archivedList.show();
+                                    });
+                                    listeRestaure.click(function() {
+                                        _listeRestaure = $(this).attr("accesskey");
+                                        $.post("ajax/_menu/params/archives/list.torestaure.php", {_listeRestaure:_listeRestaure},
+                                            function(upListeRestaure) {
+                                                /*alert(upListeRestaure);*/
+                                                if(upListeRestaure){
+                                                    closer.click();
+                                                    goArchivs.click();
+                                                    _archivedListBtn.click();
+                                                    loadboard();
+                                                }
+                                            });
+                                    });
+
 
                                     closer.click(function() {
                                         archsbox.css("right", "-500px");
                                         loadparams();
+                                        loadboard();
                                     });
                                 });
                             }
@@ -1586,12 +2148,26 @@ $(document).ready(function(){
                         });
 
                         goClose.click(function() {
-                            alert("Fermer le tableau");
+                            boardCloserBox.appendTo(parameters);
+                            boardCloserBox.hide();
+                            boardCloserBox.insertAfter($(this));
+                            boardCloserBox.show();
+                            closerBoardCloser = boardCloserBox.find("#js-closer-warning-closer");
+                            closerBoardBtn = boardCloserBox.find("#js-pm-close-baord");
+
+                            closerBoardBtn.click(function() {
+                                $.post("ajax/_menu/params/ajax.close.board.php", {bid:bid}, function(closeBoard) {
+                                    if(closeBoard) {
+                                        pseudotoRedirect = $("#js-pseudo-redirect");
+                                        document.location.href="http://localhost/www.todo.io/profile.php?id="+pseudotoRedirect+"&tab=boards";
+                                    }
+                                });
+                            });
+                            closerBoardCloser.click(function() {
+                                boardCloserBox.fadeOut();
+                                loadparams();
+                            });
                         });
-
-                        // All Params Apps //
-
-                        // End Params Apps //
 
                         closer.click(function() {
                             parameters.css("right", "-500px");
